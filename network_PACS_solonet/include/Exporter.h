@@ -16,6 +16,7 @@ class Exporter
 {
 public:
 
+	// costruttore
     Exporter ( const GetPot& dataFile, const std::string& section = "" );
 
     inline const std::string& getFolder ( ) const
@@ -23,15 +24,16 @@ public:
         return M_vtkFolder;
     }
 
-    void
+    void	// esporto la matrice
             spy ( const sparseMatrixPtr_Type& matrix,
                   const std::string& nameFile ) const;
 
-    void
+    void	// esporto il vettore
             spy ( const scalarVectorPtr_Type& vector,
                   const std::string& nameFile ) const;
 
-    void meshRegion ( const getfem::mesh& mesh,
+    void 	// esporto il "pezzo" di mesh che mi interessa
+    		meshRegion ( const getfem::mesh& mesh,
                       const std::string& nameFile = "RegionMesh.vtk" ) const;
 
 private:

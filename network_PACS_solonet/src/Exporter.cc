@@ -16,6 +16,13 @@ Exporter ( const GetPot& dataFile, const std::string& section ) :
 void Exporter::
 spy ( const sparseMatrixPtr_Type& matrix, const std::string& nameFile ) const
 {
+	// getfem, scrive la matrice dentro il file
+	// const char* c_str() const ----> Returns a pointer to an array that contains a
+	//								   null-terminated sequence of characters (i.e., a C-string)
+	//								   representing the current value of the string object.
+	// 								   This array includes the same sequence of characters that
+	//								   make up the value of the string object plus an additional terminating null-character ('\0')
+
     gmm::MatrixMarket_IO::write(nameFile.c_str(), *matrix);
 } // spy
 
