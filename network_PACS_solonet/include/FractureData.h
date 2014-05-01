@@ -12,25 +12,43 @@ public:
         FRACTURE = 0
     };
 
+	/*! il costruttore si basa di i dati presi con GEtPot da un file ed è definito in src/FractureData.cc
+	*/
+
     FractureData ( const GetPot& dataFile,
                    const std::string& section = "fractureData/",
                    const std::string& sectionDomain = "domain/",
                    const std::string& sectionDarcy = "darcy/",
                    const std::string& sectionTransport = "transport/" );
 
+/*! stiamo usando un tipo delle librerie di getfem: scalar_type che equivale al double (l'using è definito nel file core.h) 
+*/
     // termine sorgente per il tracciante, problema di trasporto
+	/*! funzione che ritorna un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+				            -> uno scalare  
+	*/
     scalar_type transportSource ( const base_node& x,
                                   const scalar_type& time );
 
     // condizioni iniziali per il problema della concentrazione
+	/*! funzione che ritorna -> un duoble
+  		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+	*/
     scalar_type concentrationInitialCondition ( const base_node& x );
 
     //questa bells funzione restituisce un'eventuale modulazione del coefficiente 
     //di permeabilità in direzione normale
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+	*/
     scalar_type etaNormalDistribution ( const base_node& x );
 
     //questa bells funzione restituisce un'eventuale modulazione del coefficiente 
     //di permeabilità in direzione tangenziale
+	/*! funzione che ritorna un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+	*/
     scalar_type etaTangentialDistribution ( const base_node& x );
 
     scalar_type muNormalDistribution ( const base_node& x );
@@ -38,30 +56,59 @@ public:
     scalar_type muTangentialDistribution ( const base_node& x );
 
     // Exact solution, concentration - dipende anche dal tempo!
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+							-> uno scalare
+	*/
     scalar_type concentrationExact ( const base_node& x,
                                      const scalar_type& time );
 
     // Exact solution, concentration IN/OUT con una flag
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+							-> uno scalare
+							-> un unsigned long
+ 	*/
     scalar_type Concentration_inout ( const base_node& x,
                                       const scalar_type& time,
                                       const size_type flag );
 
-    // Exact solution, velocity (non ho ancora impostato quella corretta)
+    // Exact solution, velocity (non ho ancora impostato quella corretta)	
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+							-> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+ 	*/
     scalar_type velocityExact ( const base_node& x,
                                 const base_node& n );
 
-    // Exact solution, flusso per la concentrazione - dipende anche dal tempo!
+    // Exact solution, flusso per la concentrazione - dipende anche dal tempo!	
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors) 
+							-> geometrical nodes (derived from special class for small (dim < 16) vectors)
+							-> un duoble 
+ 	*/
     scalar_type fluxExact ( const base_node& x,
                             const base_node& n,
                             const scalar_type& time );
 
     // Exact solution, div(Velocity) -- SET = 0 WITH NO MASS SOURCES/SINKS !
-    scalar_type darcySource ( const base_node& x );
+	/*! funzione che ritorna -> un duoble
+		richiede in entrata -> geometrical nodes (derived from special class for small (dim < 16) vectors)
+		trenne ultima che
+		richiede in entrata ->  un double					
+	*/
+							
+	scalar_type darcySource ( const base_node& x );
 
     scalar_type pressureExact ( const base_node& x );
 
     scalar_type meshSpacing ( const scalar_type& x );
-
+	
+	/*! questa serie di inline serve per poter accedere a i parametri della classe, tutti private, 
+		quindi l'utente può avere accesso visivo a i parametri della classe ma non può modificarli
+		l'uso del'inline ci porta a usare il compilatore per queste funzioni e non l'esecutore (?) non son certa si dica così
+	 */
+	
     inline scalar_type getPosition () const
     {
         return M_position;
