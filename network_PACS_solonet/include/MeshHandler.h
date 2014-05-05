@@ -24,18 +24,39 @@ public:
 
             MeshHandler ( const GetPot& dataFile,
                           const std::string& sectionDomain = "" );
-
+    /** imposto la mesh
+     * nel file letto con getpot c'è una variabile che dice se la mesh va importata
+     * o deve essere costruita
+     */
     void setUpMesh ( );
 
+    /**
+     * aggiungo gli elementi necessari alle regioni non tagliate
+     * dove sono presenti fratture arricchisco gli elementi finiti
+     * tolgo gli elementi relativi alle fratture e li sposto, la matrice
+     * avrà tutta la parte relativa alle fratture in fondo
+     * la numerazione è fatta in modo automatico
+     */
     void setUpRegions ( const FracturesSetPtr_Type& fracture );
 
+    // definizione degli elementi finiti per velocità e pressione
     void setUpFEM ( );
 
+    /**
+     * definisco i vettori dei circocentri degli elementi della mesh,
+     * dei punti medi dei lati e delle lunghezze dei lati della triangolazione
+     */
     void computeMeshMeasures ( );
 
+    /**
+     * Just to see what elements are cut by the level set M_levelSet:
+     * esporto per paraview gli elementi tagliati, 1 se tagliati 0 se no
+     */
     void
     printCuttedElements ( const std::string& vtkFolder = "vtk/",
                           const std::string& fileName = "CuttedElements" ) const;
+
+
 
     inline size_type getSpatialDiscretization ( ) const
     {
@@ -219,12 +240,14 @@ public:
 
 private:
 
-    // questa sistema la cut region creando una lista dei triangoli che non sono veramente tagliati, in pratica quando A1 o A2 sono minori di una certa tolleranza
+    // questa sistema la cut region creando una lista dei triangoli che non sono veramente
+    // tagliati, in pratica quando A1 o A2 sono minori di una certa tolleranza
     void fixCutRegion ( const FractureHandlerPtr_Type& fracture );
 
     // the M_mediumMesh
     getfem::mesh M_mesh;
 
+    /// getfem::mesh_level_set --->  Keep informations about a mesh crossed by level-sets.
     getfem::mesh_level_set M_meshLevelSet;
 
     std::string M_meshType;
@@ -234,6 +257,10 @@ private:
     //elementi finiti
     // Mesh fem for velocity
     std::string M_fEMTypeVector;
+    /** getfem::mesh_fem
+     * describe the finite element space on which some variables will be described
+     * A mesh, with a set of FEM attached to its convexes is called a mesh_fem
+     */
     getfem::mesh_fem M_meshFEMVector;
     // mesh_fem for pressure
     std::string M_fEMTypeScalar;
@@ -243,7 +270,24 @@ private:
 
     //metodi di integrazione
     // integration method for vector fields
+    /**
+     * The finite elements method involves evaluation of integrals of these basis functions
+     * (or product of basis functions etc.) on convexes (and faces of convexes). In simple
+     * cases (polynomial basis functions and linear geometrical transformation), one can
+     * evaluate analytically these integrals. In other cases, one has to approximate it using
+     * quadrature formulas. Hence, at each convex is attached an integration method along with
+     * the FEM. If you have to use an approximate integration method, always choose carefully
+     * its order (i.e. highest degree of the polynomials who are exactly integrated with the
+     * method): the degree of the FEM, of the polynomial degree of the geometrical transformation,
+     * and the nature of the elementary matrix have to be taken into account. If you are unsure
+     * about the appropriate degree, always prefer a high order integration method (which will
+     * slow down the assembly) to a low order one which will produce a useless linear-system.
+     */
     std::string M_integrationTypeVector;
+
+    /** getfem::mesh_im
+     * A mesh, with a set of integration methods attached to its convexes is called a mesh_im
+     */
     getfem::mesh_im M_integrationMethodVector;
     // integration method for scalar fields
     std::string M_integrationTypeScalar;
@@ -261,7 +305,7 @@ private:
     std::string M_meshFolder;
 
     size_type M_spatialDiscretization;
-    scalar_type M_inclination;
+    scalar_type M_inclination;	// scalar_type è un reale
     scalar_type M_lengthAbscissa;
     scalar_type M_lengthOrdinate;
     scalar_type M_lengthQuota;

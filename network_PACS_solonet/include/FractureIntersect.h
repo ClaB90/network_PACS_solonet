@@ -16,8 +16,13 @@ public:
                 Cross = 500000
         };
 
+        /*
+         * associo ad ogni intersezione una mappa che contiene il tipo e un puntatore
+         * alla classe IntersectData
+         */
         typedef std::map < IntersectionType, IntersectDataContainer_Type > mapIntersection_Type;
         typedef std::pair < size_type, size_type > regionLevelSetPair_Type;
+
 
         FractureIntersect ();
 

@@ -1,7 +1,7 @@
 #include "../include/FractureHandler.h"
 
 FractureHandler::FractureHandler ( const GetPot& dataFile,
-                                   const size_type& ID,
+                                   const size_type& ID,		// ID numero frattura
                                    const std::string& section ) :
     M_ID(ID), M_data(dataFile, section),
             M_integrationMethodVelocity(M_meshFlat),

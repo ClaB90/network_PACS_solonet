@@ -48,8 +48,8 @@ public:
 
 private:
 
-        FracturePtrContainer_Type M_fractures;
-        FractureIntersectPtr_Type M_intersections;
+        FracturePtrContainer_Type M_fractures;	// puntatore alla classe frattura
+        FractureIntersectPtr_Type M_intersections;	// puntatore alla classe che descrive l'intersezione
 
 }; // class FracturesSet
 

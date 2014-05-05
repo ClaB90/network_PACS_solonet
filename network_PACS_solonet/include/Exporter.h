@@ -12,6 +12,10 @@
 #include "MeshHandler.h"
 #include <fstream>
 
+/** Classe che uso per esportare i dati
+ * prende una referenza ad un oggetto di tipo getpot e ad una stringa
+ *
+ */
 class Exporter
 {
 public:
@@ -37,7 +41,7 @@ public:
                       const std::string& nameFile = "RegionMesh.vtk" ) const;
 
 private:
-
+    // stringa in cui metto il nome del file salvare l'output in formato vtk
     const std::string M_vtkFolder;
 
 };

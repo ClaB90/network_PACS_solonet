@@ -7,6 +7,9 @@
 
 #include "../include/MeshHandler.h"
 
+/**
+ * nel file letto con getpot ci sono tute le informazioni necessarie per costruire la mesh
+ */
 MeshHandler::MeshHandler ( const GetPot& dataFile,
                            const std::string& sectionDomain ) :
             M_meshLevelSet ( M_mesh ),
@@ -44,8 +47,9 @@ MeshHandler::MeshHandler ( const GetPot& dataFile,
 
 void MeshHandler::setUpMesh ( )
 {
-    if ( M_meshExternal == "none" )
+    if ( M_meshExternal == "none" )	// campo private, se impostato a none non importo la mesh
     {
+    	// costruisco io la mesh
         //------------------M_mediumMesh di Omega--------------------------------
         sizeVector_Type numberSubdivision(M_spaceDimension);
         std::fill(numberSubdivision.begin(), numberSubdivision.end(),
@@ -76,7 +80,7 @@ void MeshHandler::setUpMesh ( )
         // scale the unit M_mediumMesh to [M_mediumLengthAbscissa,M_mediumLengthOrdinate]
         M_mesh.transformation(transformMatrix);
     }
-    else
+    else	// altrimenti importo la mesh da fuori
     {
         getfem::import_mesh((M_meshFolder + M_meshExternal).data(), M_mesh);
     }
@@ -86,6 +90,10 @@ void MeshHandler::setUpRegions ( const FracturesSetPtr_Type& fractures )
 {
     // Select cut and uncut elements;
     size_type i_cv = 0;
+
+    /**M_mesh.convex_index()
+     * gives a dal::bit_vector object which represents all the indexes of valid elements of a mesh
+     */
     dal::bit_vector bv_cv = M_mesh.convex_index();
 
     // Add all the elements to the uncut region
@@ -96,8 +104,17 @@ void MeshHandler::setUpRegions ( const FracturesSetPtr_Type& fractures )
 
     const size_type numberFractures = fractures->getNumberFractures ();
 
-    if ( numberFractures > 0 )
+    if ( numberFractures > 0 )  // se sono presenti delle fratture
     {
+    	/**
+    	 * se sono presenti delle fratture devo estendere i gradi di libertà
+    	 * ricorda che noi usiamo gli XFEM, cioè elementi finiti arricchiti che
+    	 * mi permettono di rappresentare una soluzione che salta dentro un elemento.
+    	 * In pratica in quegli elementi invece che un dof di pressione e due di
+    	 * velocità ne ho il doppio: due di pressione, così posso avere un valore a
+    	 * destra e uno a snistra del salto, e 4 dof di velocità per avere due soluzioni
+    	 * lineari diverse a dx e sin dell'intersezione
+    	 */
 
         M_extendedDOFScalar.resize ( numberFractures );
         M_extendedDOFVector.resize ( numberFractures );
@@ -105,7 +122,7 @@ void MeshHandler::setUpRegions ( const FracturesSetPtr_Type& fractures )
         for ( size_type f = 0; f < numberFractures; ++f )
         {
             i_cv = 0;
-            bv_cv = M_mesh.convex_index();
+            bv_cv = M_mesh.convex_index();	// restituisce un vettore con gli indici di elementi validi della mesh
 
             for ( i_cv << bv_cv; i_cv != size_type(-1); i_cv << bv_cv )
             {
@@ -129,6 +146,7 @@ void MeshHandler::setUpRegions ( const FracturesSetPtr_Type& fractures )
                 if ( fractures->getFracture ( f )->getLevelSet()->getMesh().is_convex_cut(
                         i_cv) )
                 {
+                	// sup rimuove un elemento
                     M_mesh.region ( UNCUT_REGION ).sup(i_cv);
                 }
             }
@@ -513,7 +531,9 @@ size_type MeshHandler::getCountExtendedDOFVector ( const scalar_type& id ) const
 }
 
 /*
- questa sistema la cut region creando una lista dei triangoli che non sono veramente tagliati, in pratica quando A1 o A2 sono minori di una certa tolleranza
+ questa sistema la cut region creando una lista dei triangoli che
+ non sono veramente tagliati, in pratica quando A1 o A2 sono minori
+ di una certa tolleranza
  */
 void MeshHandler::fixCutRegion ( const FractureHandlerPtr_Type& fracture )
 {

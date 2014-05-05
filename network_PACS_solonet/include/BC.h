@@ -17,9 +17,11 @@ public:
 
     enum
     {
+    	// definisco quanti elementi hanno condizioni di dirichlet e quanti ni neumann
         DIRICHLET_BOUNDARY_NUM = 40, NEUMANN_BOUNDARY_NUM = 50
     };
 
+    // costruttore
     BC ( getfem::mesh& mesh,
          const std::string& MeshType,
          const ElementDimension& dimension = MEDIUM );

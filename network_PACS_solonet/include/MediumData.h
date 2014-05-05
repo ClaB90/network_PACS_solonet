@@ -4,6 +4,11 @@
 #include "Core.h"
 #include "Parser.h"
 
+/*
+ * MediumData.h fornisce i dati per la soluzione del problema di darcy
+ * fornisce la soluzione esatta in pressione e velocità e la soluzione iniziale
+ */
+
 class MediumData
 {
 public:
@@ -79,6 +84,14 @@ private:
     std::string M_source;
     std::string M_exactInitial;
 
+    /* mutable
+     *   Questa parola chiave può essere applicata solo a membri
+     *   dati non dichiarati come static e const di una classe. Se
+     *   un membro dati viene dichiarato mutable, è consentito
+     *   assegnare un valore a questo membro dati da una funzione
+     *   membro const.
+     *
+     */
     mutable LifeV::Parser M_parser;
 
 };
