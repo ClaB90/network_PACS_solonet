@@ -1,3 +1,9 @@
+/*! Questo file:
+	 - include tutte le librerie getfem che ci servono
+	 - definisce tutti i typedef che poi useremo
+	 - definisce le enumeraizone utilizzate più avanti nel codice
+*/
+
 #ifndef _DARCYCORE_
 #define _DARCYCORE_ 1
 
@@ -27,6 +33,9 @@
 #include <iostream>
 #include <boost/shared_ptr.hpp>
 #include <iomanip>
+
+/*! bgeot:: è un namespace di una libreria di  getfem
+*/
 
 /* some Getfem++ types that we will be using */
 using bgeot::base_small_vector;
